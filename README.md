@@ -1,4 +1,5 @@
-# Cash on Delivery (COD) Verification System with Location-Based Services (LBS) and Two-Factor Authentication (2FA): Reducing Return-to-Origin (RTO) and Enhancing Trust in E-Commerce Transactions.
-## 1. The project aims to address this critical operational challenge by designing and developing a COD verification system that integrates Location-Based Services (LBS) and Two-Factor Authentication (2FA) at the checkout stage.
-### 2. The goal is to minimise Return-to-Origin (RTO) incidents caused by invalid addresses, false orders, or consumer indecision, thereby improving logistical efficiency, user trust, and environmental sustainability.
-#### 3. 
+# 1. How can the integration of Location-Based Services (LBS) and Two-Factor Authentication (2FA) improve the reliability and accuracy of Cash-on-Delivery (COD) transactions in E-commerce platforms?
+
+## 2. To what extent does a culturally localised and user-friendly verification interface influence consumer trust and checkout completion rates in COD payment systems?
+
+### 3. What is the potential impact of an automated COD verification system on operational efficiency and environmental sustainability within last-mile logistics?
