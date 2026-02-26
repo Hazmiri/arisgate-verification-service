@@ -1,3 +1,0 @@
-The project start to day:
-Following the proposal.
-Connect local repo to GitHub
