@@ -5,7 +5,7 @@ exports.startVerification = async (req, res) => {
     try {
 
         // Extract order information from request body
-        const order = req.body
+        const order = req.body //undefined
 
         console.log("Incoming order verification:", order)
 
