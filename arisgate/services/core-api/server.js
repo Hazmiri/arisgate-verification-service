@@ -1,19 +1,18 @@
-//Load environment variables from .env file
+require("dotenv").config()
 
-require("dotenv").config();
+const app = require("./src/app")
 
-//Import the Express application
+// Import database connector
+const connectDatabase = require("./src/config/database")
 
-const app = require("./src/app");
+const PORT = process.env.PORT || 4000
 
-//Define the port the server will run on
+// Connect to MongoDB
+connectDatabase()
 
-const PORT = process.env.PORT || 4000;
-
-//Start the server
-
+// Start API server
 app.listen(PORT, () => {
-  // correct template string using backticks
 
-  console.log(`ArisGate API running on port ${PORT}`);
-});
+    console.log(`ArisGate API running on port ${PORT}`)
+
+})
