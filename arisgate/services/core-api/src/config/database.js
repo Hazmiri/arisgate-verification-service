@@ -1,5 +1,5 @@
 // Imoprt mongoose ODM
-const mongoose = requiere("mongoose");
+const mongoose = require("mongoose");
 
 // function responsible for connecting the application to MongoDB
 const connectDagabase = async () => {
