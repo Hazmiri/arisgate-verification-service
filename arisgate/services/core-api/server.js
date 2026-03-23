@@ -1,18 +1,12 @@
-require("dotenv").config()
+require("dotenv").config();
 
-const app = require("./src/app")
+const app = require("./src/app");
+const connectDatabase = require("./src/config/database");
 
-// Import database connector
-const connectDatabase = require("./src/config/database")
+const PORT = process.env.PORT || 4000;
 
-const PORT = process.env.PORT || 4000
+connectDatabase();
 
-// Connect to MongoDB
-connectDatabase()
-
-// Start API server
 app.listen(PORT, () => {
-
-    console.log(`ArisGate API running on port ${PORT}`)
-
-})
+  console.log(`ArisGate API running on port ${PORT}`);
+});

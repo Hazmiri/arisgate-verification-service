@@ -1,35 +1,24 @@
-// Controller responsible for starting verification
+const Order = require("../models/order.model");
 
 exports.startVerification = async (req, res) => {
+  try {
+    const orderData = req.body;
 
-    try {
+    console.log("Incoming order verification:", orderData);
 
-        // Extract order information from request body
-        const order = req.body //undefined
+    // Save to database
+    const order = await Order.create(orderData);
 
-        console.log("Incoming order verification:", order)
+    res.json({
+      status: "verification_started",
+      orderId: order._id,
+      message: "ArisGate verification initiated",
+    });
+  } catch (error) {
+    console.error(error);
 
-        // For now we only return a response
-        // Later this will trigger LBS validation and OTP verification
-
-        return res.json({
-
-            status: "verification_started",
-            message: "ArisGate verification initiated",
-            order: order
-
-        })
-
-    } catch (error) {
-
-        console.error(error)
-
-        res.status(500).json({
-
-            error: "Internal verification error"
-
-        })
-
-    }
-
-}
+    res.status(500).json({
+      error: "Internal verification error",
+    });
+  }
+};
