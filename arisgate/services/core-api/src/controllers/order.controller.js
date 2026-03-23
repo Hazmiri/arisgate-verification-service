@@ -15,10 +15,10 @@ exports.startVerification = async (req, res) => {
       message: "ArisGate verification initiated",
     });
   } catch (error) {
-    console.error(error);
+    console.error("REAL ERROR:", error);
 
     res.status(500).json({
-      error: "Internal verification error",
+      error: error.message,
     });
   }
 };
