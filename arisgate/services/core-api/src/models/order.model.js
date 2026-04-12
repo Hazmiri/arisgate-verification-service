@@ -1,45 +1,48 @@
-// Import mongoose library for MongoDB interaction
+// Import mongoose for schema and model creation
 const mongoose = require("mongoose");
 
-// Define the schema for an Order document
-// This represents a COD (Cash on Delivery) request within ArisGate
-const orderSchema = new mongoose.Schema({
+/**
+ * Schema for a Cash-on-Delivery verification session.
+ * Each document represents one order submitted to ArisGate
+ * for validation and risk assessment.
+ */
+const orderSchema = new mongoose.Schema(
+  {
+    // Customer full name
+    name: {
+      type: String,
+      required: true
+    },
 
-  // Customer full name
-  name: {
-    type: String,
-    required: true
+    // Customer phone number for future OTP verification
+    phone: {
+      type: String,
+      required: true
+    },
+
+    // Delivery address entered by the customer
+    address: {
+      type: String,
+      required: true
+    },
+
+    // Current verification lifecycle status
+    status: {
+      type: String,
+      default: "verification_started"
+    },
+
+    // Rule-based fraud / quality score
+    riskScore: {
+      type: Number,
+      default: 0
+    }
   },
-
-  // Customer phone number (used for OTP verification later)
-  phone: {
-    type: String,
-    required: true
-  },
-
-  // Delivery address provided at checkout
-  address: {
-    type: String,
-    required: true
-  },
-
-  // Current verification status of the order
-  status: {
-    type: String,
-    default: "verification_started"
-  },
-
-  // Risk score calculated based on validation rules
-  // This will be used to detect potentially fraudulent orders
-  riskScore: {
-    type: Number,
-    default: 0
+  {
+    // Automatically adds createdAt and updatedAt timestamps
+    timestamps: true
   }
+);
 
-}, {
-  // Automatically add createdAt and updatedAt timestamps
-  timestamps: true
-});
-
-// Export the model so it can be used in controllers and services
+// Export the Mongoose model
 module.exports = mongoose.model("Order", orderSchema);
