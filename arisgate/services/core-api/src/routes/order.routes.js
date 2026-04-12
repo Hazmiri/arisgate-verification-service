@@ -1,13 +1,17 @@
 // Import Express router
-const express = require("express")
+const express = require("express");
 
-const router = express.Router()
+// Create router instance
+const router = express.Router();
 
-// Import controller
-const orderController = require("../controllers/order.controller")
+// Import controller functions
+const orderController = require("../controllers/order.controller");
 
-// Route for starting verification process
-router.post("/verify", orderController.startVerification)
+/**
+ * POST /v1/orders/verify
+ * Starts the verification workflow for a COD order
+ */
+router.post("/verify", orderController.startVerification);
 
-// Export router
-module.exports = router
+// Export router so it can be registered in app.js
+module.exports = router;
