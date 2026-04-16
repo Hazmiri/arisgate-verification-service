@@ -1,10 +1,6 @@
-// Import Express router
 const express = require("express");
-
-// Create router instance
 const router = express.Router();
 
-// Import controller functions
 const orderController = require("../controllers/order.controller");
 
 /**
@@ -13,5 +9,16 @@ const orderController = require("../controllers/order.controller");
  */
 router.post("/verify", orderController.startVerification);
 
-// Export router so it can be registered in app.js
+/**
+ * POST /v1/orders/:id/send-otp
+ * Generates and stores a simulated OTP for an order
+ */
+router.post("/:id/send-otp", orderController.sendOtp);
+
+/**
+ * POST /v1/orders/:id/confirm-otp
+ * Confirms the OTP submitted by the user
+ */
+router.post("/:id/confirm-otp", orderController.confirmOtp);
+
 module.exports = router;
