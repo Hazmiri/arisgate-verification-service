@@ -28,15 +28,18 @@ exports.startVerification = async (req, res) => {
       name,
       phone,
       address,
-      riskScore
+      riskScore,
     });
+
+    // Debug proof that MongoDB saved the document
+    console.log("Saved order:", order);
 
     // Send successful verification response
     res.json({
       status: "verification_started",
       orderId: order._id,
       riskScore: order.riskScore,
-      message: "ArisGate verification initiated"
+      message: "ArisGate verification initiated",
     });
   } catch (error) {
     // Log the full backend error for debugging
@@ -44,7 +47,7 @@ exports.startVerification = async (req, res) => {
 
     // Return safe error message to the client
     res.status(500).json({
-      error: error.message
+      error: error.message,
     });
   }
 };
