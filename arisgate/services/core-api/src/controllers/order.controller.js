@@ -33,6 +33,7 @@ exports.startVerification = async (req, res) => {
 
     // Debug proof that MongoDB saved the document
     console.log("Saved order:", order);
+    console.log("Collection used:", Order.collection.name);
 
     // Send successful verification response
     res.json({
