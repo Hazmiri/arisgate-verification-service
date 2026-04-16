@@ -36,7 +36,19 @@ const orderSchema = new mongoose.Schema(
     riskScore: {
       type: Number,
       default: 0
-    }
+    },
+
+    // Unique OTP code sent to the customer's phone for verification
+    otpCode: {
+    type: String,
+    default: null
+    },
+
+    // Indicates whether the OTP was successfully confirmed
+    otpVerified: {
+    type: Boolean,
+    default: false
+    },
   },
   {
     // Automatically adds createdAt and updatedAt timestamps
