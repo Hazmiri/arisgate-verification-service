@@ -13,14 +13,14 @@ exports.sendOtp = async (req, res) => {
       id,
       {
         otpCode,
-        status: "otp_sent"
+        status: "otp_sent",
       },
-      { new: true }
+      { new: true },
     );
 
     if (!order) {
       return res.status(404).json({
-        error: "Order not found"
+        error: "Order not found",
       });
     }
 
@@ -30,13 +30,13 @@ exports.sendOtp = async (req, res) => {
       message: "OTP generated successfully",
       orderId: order._id,
       otpCode: order.otpCode,
-      status: order.status
+      status: order.status,
     });
   } catch (error) {
     console.error("OTP Send Error:", error);
 
     res.status(500).json({
-      error: error.message
+      error: error.message,
     });
   }
 };
