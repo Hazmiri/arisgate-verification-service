@@ -1,52 +1,83 @@
-// Import the Order model to interact with MongoDB
-const Order = require("../models/order.model");
-
-// Import the risk scoring service
-const { calculateRiskScore } = require("../services/risk.service");
+const { generateOtpCode } = require("../services/otp.service");
 
 /**
- * Starts the verification process for a Cash-on-Delivery order.
- *
- * Current responsibilities:
- * - Receive request data from the client
- * - Delegate risk calculation to the risk service
- * - Store the verification session in MongoDB
- * - Return a JSON response with order ID and score
+ * Generates and stores a simulated OTP code for an existing order.
  */
-exports.startVerification = async (req, res) => {
+exports.sendOtp = async (req, res) => {
   try {
-    // Extract customer input from the request body
-    const { name, phone, address } = req.body;
+    const { id } = req.params;
 
-    console.log("Incoming order verification:", req.body);
+    const otpCode = generateOtpCode();
 
-    // Calculate risk score using the dedicated service
-    const riskScore = calculateRiskScore({ name, phone, address });
+    const order = await Order.findByIdAndUpdate(
+      id,
+      {
+        otpCode,
+        status: "otp_sent",
+      },
+      { new: true },
+    );
 
-    // Create and save the order document in MongoDB
-    const order = await Order.create({
-      name,
-      phone,
-      address,
-      riskScore,
-    });
+    if (!order) {
+      return res.status(404).json({
+        error: "Order not found",
+      });
+    }
 
-    // Debug proof that MongoDB saved the document
-    console.log("Saved order:", order);
-    console.log("Collection used:", Order.collection.name);
+    console.log("Generated OTP for order:", id, otpCode);
 
-    // Send successful verification response
     res.json({
-      status: "verification_started",
+      message: "OTP generated successfully",
       orderId: order._id,
-      riskScore: order.riskScore,
-      message: "ArisGate verification initiated",
+      otpCode: order.otpCode,
+      status: order.status,
     });
   } catch (error) {
-    // Log the full backend error for debugging
-    console.error("Verification Error:", error);
+    console.error("OTP Send Error:", error);
 
-    // Return safe error message to the client
+    res.status(500).json({
+      error: error.message,
+    });
+  }
+};
+
+/**
+ * Confirms whether the submitted OTP matches the stored code.
+ */
+exports.confirmOtp = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const { otpCode } = req.body;
+
+    const order = await Order.findById(id);
+
+    if (!order) {
+      return res.status(404).json({
+        error: "Order not found",
+      });
+    }
+
+    if (order.otpCode !== otpCode) {
+      return res.status(400).json({
+        message: "Invalid OTP",
+        otpVerified: false,
+      });
+    }
+
+    order.otpVerified = true;
+    order.status = "otp_verified";
+
+    await order.save();
+
+    res.json({
+      message: "OTP verified successfully",
+      orderId: order._id,
+      otpVerified: order.otpVerified,
+      status: order.status,
+    });
+  } catch (error) {
+    console.error("OTP Confirm Error:", error);
+
     res.status(500).json({
       error: error.message,
     });
