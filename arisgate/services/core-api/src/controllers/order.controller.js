@@ -1,4 +1,47 @@
+// Import the Order model to interact with MongoDB
+const Order = require("../models/order.model");
+
+// Import the risk scoring service
+const { calculateRiskScore } = require("../services/risk.service");
+
+// Import the OTP service
 const { generateOtpCode } = require("../services/otp.service");
+
+/**
+ * Starts the verification process for a Cash-on-Delivery order.
+ */
+exports.startVerification = async (req, res) => {
+  try {
+    const { name, phone, address } = req.body;
+
+    console.log("Incoming order verification:", req.body);
+
+    const riskScore = calculateRiskScore({ name, phone, address });
+
+    const order = await Order.create({
+      name,
+      phone,
+      address,
+      riskScore
+    });
+
+    console.log("Saved order:", order);
+    console.log("Collection used:", Order.collection.name);
+
+    res.json({
+      status: "verification_started",
+      orderId: order._id,
+      riskScore: order.riskScore,
+      message: "ArisGate verification initiated"
+    });
+  } catch (error) {
+    console.error("Verification Error:", error);
+
+    res.status(500).json({
+      error: error.message
+    });
+  }
+};
 
 /**
  * Generates and stores a simulated OTP code for an existing order.
@@ -13,14 +56,14 @@ exports.sendOtp = async (req, res) => {
       id,
       {
         otpCode,
-        status: "otp_sent",
+        status: "otp_sent"
       },
-      { new: true },
+      { new: true }
     );
 
     if (!order) {
       return res.status(404).json({
-        error: "Order not found",
+        error: "Order not found"
       });
     }
 
@@ -30,13 +73,13 @@ exports.sendOtp = async (req, res) => {
       message: "OTP generated successfully",
       orderId: order._id,
       otpCode: order.otpCode,
-      status: order.status,
+      status: order.status
     });
   } catch (error) {
     console.error("OTP Send Error:", error);
 
     res.status(500).json({
-      error: error.message,
+      error: error.message
     });
   }
 };
@@ -53,14 +96,14 @@ exports.confirmOtp = async (req, res) => {
 
     if (!order) {
       return res.status(404).json({
-        error: "Order not found",
+        error: "Order not found"
       });
     }
 
     if (order.otpCode !== otpCode) {
       return res.status(400).json({
         message: "Invalid OTP",
-        otpVerified: false,
+        otpVerified: false
       });
     }
 
@@ -73,13 +116,13 @@ exports.confirmOtp = async (req, res) => {
       message: "OTP verified successfully",
       orderId: order._id,
       otpVerified: order.otpVerified,
-      status: order.status,
+      status: order.status
     });
   } catch (error) {
     console.error("OTP Confirm Error:", error);
 
     res.status(500).json({
-      error: error.message,
+      error: error.message
     });
   }
 };
