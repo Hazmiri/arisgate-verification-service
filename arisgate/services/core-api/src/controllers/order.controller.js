@@ -126,3 +126,38 @@ exports.confirmOtp = async (req, res) => {
     });
   }
 };
+
+/**
+ * Returns a single order document by ID.
+ * This is useful for checking verification state after each workflow step.
+ */
+exports.getOrderById = async (req, res) => {
+  try {
+    const { id } = req.params;
+
+    const order = await Order.findById(id);
+
+    if (!order) {
+      return res.status(404).json({
+        error: "Order not found"
+      });
+    }
+
+    res.json({
+      orderId: order._id,
+      name: order.name,
+      phone: order.phone,
+      address: order.address,
+      riskScore: order.riskScore,
+      status: order.status,
+      otpVerified: order.otpVerified,
+      otpCode: order.otpCode
+    });
+  } catch (error) {
+    console.error("Get Order Error:", error);
+
+    res.status(500).json({
+      error: error.message
+    });
+  }
+};
