@@ -15,4 +15,7 @@ router.post("/:id/confirm-otp", orderController.confirmOtp);
 // Fetch a single order by ID
 router.get("/:id", orderController.getOrderById);
 
+// Evaluate final decision
+router.post("/:id/evaluate", orderController.evaluateOrder);
+
 module.exports = router;
