@@ -46,6 +46,16 @@ const orderSchema = new mongoose.Schema(
       type: Number,
       default: 0,
     },
+
+    verificationDecision: {
+      type: String,
+      default: "pending",
+    },
+
+    decisionReason: {
+      type: String,
+      default: "Not yet evaluated",
+    },
   },
 
   {
