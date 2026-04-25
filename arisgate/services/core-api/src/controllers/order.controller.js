@@ -10,6 +10,7 @@ const { validateAddress } = require("../services/lbs.service");
 // Import the OTP service
 const { generateOtpCode } = require("../services/otp.service");
 
+const { evaluateOrderDecision } = require("../services/decision.service");
 /**
  * Starts the verification process for a Cash-on-Delivery order.
  */
@@ -167,6 +168,46 @@ exports.getOrderById = async (req, res) => {
 
     res.status(500).json({
       error: error.message,
+    });
+  }
+};
+
+/**
+ * Evaluates an order and assigns a final verification decision.
+ */
+exports.evaluateOrder = async (req, res) => {
+  try {
+    const { id } = req.params;
+
+    const order = await Order.findById(id);
+
+    if (!order) {
+      return res.status(404).json({
+        error: "Order not found"
+      });
+    }
+
+    const { verificationDecision, decisionReason } = evaluateOrderDecision({
+      riskScore: order.riskScore,
+      otpVerified: order.otpVerified,
+      addressValidation: order.addressValidation
+    });
+
+    order.verificationDecision = verificationDecision;
+    order.decisionReason = decisionReason;
+
+    await order.save();
+
+    res.json({
+      orderId: order._id,
+      verificationDecision: order.verificationDecision,
+      decisionReason: order.decisionReason
+    });
+  } catch (error) {
+    console.error("Evaluate Order Error:", error);
+
+    res.status(500).json({
+      error: error.message
     });
   }
 };
